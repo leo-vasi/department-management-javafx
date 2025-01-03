@@ -73,7 +73,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.leo.application.departmentcrudjavafx/com.leo.application.departmentcrudjavafx.HelloApplication
+                                com.leo.application.departmentcrudjavafx/com.leo.application.departmentcrudjavafx.Main
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
