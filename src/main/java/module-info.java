@@ -1,6 +1,7 @@
 module com.leo.application.departmentcrudjavafx {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.desktop;
 
     opens com.leo.application.departmentcrudjavafx to javafx.fxml;
     opens com.leo.gui to javafx.fxml;
