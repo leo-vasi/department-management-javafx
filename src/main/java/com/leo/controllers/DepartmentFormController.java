@@ -1,9 +1,15 @@
 package com.leo.controllers;
 
+import com.leo.db.DbException;
 import com.leo.entities.Department;
+import com.leo.services.DepartmentService;
+import com.leo.util.Alerts;
 import com.leo.util.Constraints;
+import com.leo.util.Utils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -14,6 +20,8 @@ import java.util.ResourceBundle;
 public class DepartmentFormController implements Initializable {
 
     private Department entity;
+
+    private DepartmentService service;
 
     @FXML
     private TextField txtId;
@@ -31,17 +39,41 @@ public class DepartmentFormController implements Initializable {
     private Button btCancel;
 
     @FXML
-    public void onBtSaveAction() {
-        System.out.println("onBtSaveAction");
+    public void onBtSaveAction(ActionEvent event) {
+        if (entity == null) {
+            throw new IllegalStateException("Entity is null");
+        }
+        if (service == null) {
+            throw new IllegalStateException("Service is null");
+        }
+        try {
+            entity = getFormData();
+            service.saveOrUpdate(entity);
+            Utils.currentStage(event).close();
+        }
+        catch (DbException e) {
+            Alerts.showAlert("Error saving object", null, e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private Department getFormData() {
+        Department obj = new Department();
+        obj.setId(Utils.tryParseToInt(txtId.getText()));
+        obj.setName(txtName.getText());
+        return obj;
     }
 
     @FXML
-    public void onBtCancelAction() {
-        System.out.println("onBtCancelAction");
+    public void onBtCancelAction(ActionEvent event) {
+        Utils.currentStage(event).close();
     }
 
     public void setDepartment(Department entity) {
         this.entity = entity;
+    }
+
+    public void setDepartmentService(DepartmentService service) {
+        this.service = service;
     }
 
     @Override
