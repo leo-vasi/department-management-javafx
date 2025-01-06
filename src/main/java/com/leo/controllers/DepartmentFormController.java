@@ -1,5 +1,6 @@
 package com.leo.controllers;
 
+import com.leo.exceptions.ValidationException;
 import com.leo.listeners.DataChangeListener;
 import com.leo.db.DbException;
 import com.leo.entities.Department;
@@ -16,9 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class DepartmentFormController implements Initializable {
 
@@ -57,6 +56,9 @@ public class DepartmentFormController implements Initializable {
             notifyDataChangeListener();
             Utils.currentStage(event).close();
         }
+        catch (ValidationException e) {
+            setErrorMessages(e.getErrors());
+        }
         catch (DbException e) {
             Alerts.showAlert("Error saving object", null, e.getMessage(), Alert.AlertType.ERROR);
         }
@@ -70,8 +72,16 @@ public class DepartmentFormController implements Initializable {
 
     private Department getFormData() {
         Department obj = new Department();
+        ValidationException exception = new ValidationException("Validation error");
+
         obj.setId(Utils.tryParseToInt(txtId.getText()));
+        if (txtName.getText() == null || txtName.getText().trim().equals("")) {
+            exception.addError("name", "Field cannot be empty");
+        }
         obj.setName(txtName.getText());
+        if (exception.getErrors().size() > 0) {
+            throw exception;
+        }
         return obj;
     }
 
@@ -108,5 +118,13 @@ public class DepartmentFormController implements Initializable {
         }
         txtId.setText(String.valueOf(entity.getId()));
         txtName.setText(entity.getName());
+    }
+
+    private void setErrorMessages(Map<String, String> errors) {
+        Set<String> fields = errors.keySet();
+
+        if (fields.contains("name")) {
+            labelErrorName.setText(errors.get("name"));
+        }
     }
 }
