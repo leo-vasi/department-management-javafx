@@ -2,6 +2,7 @@ package com.leo.controllers;
 
 import com.leo.application.departmentcrudjavafx.Main;
 import com.leo.entities.Department;
+import com.leo.listeners.DataChangeListener;
 import com.leo.services.DepartmentService;
 import com.leo.util.Alerts;
 import com.leo.util.Utils;
@@ -26,7 +27,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class DepartmentListController implements Initializable {
+public class DepartmentListController implements Initializable, DataChangeListener {
 
     private DepartmentService service;
 
@@ -84,6 +85,7 @@ public class DepartmentListController implements Initializable {
             Pane pane = loader.load();
             DepartmentFormController controller = loader.getController();
             controller.setDepartment(obj);
+            controller.subscribeDataChangeListener(this);
             controller.updateFormData();
             controller.setDepartmentService(new DepartmentService());
             Stage dialogStage = new Stage();
@@ -97,5 +99,10 @@ public class DepartmentListController implements Initializable {
         catch (IOException e) {
             Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), Alert.AlertType.ERROR);
         }
+    }
+
+    @Override
+    public void onDataChanged() {
+        updateTableView();
     }
 }
