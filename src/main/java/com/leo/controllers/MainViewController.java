@@ -2,6 +2,7 @@ package com.leo.controllers;
 
 import com.leo.application.departmentcrudjavafx.Main;
 import com.leo.services.DepartmentService;
+import com.leo.services.SellerService;
 import com.leo.util.Alerts;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,7 +30,10 @@ public class MainViewController implements Initializable {
 
     @FXML
     public void onMenuItemSellerAction() {
-        System.out.println("onMenuItemSellerAction");
+        loadView("/com/leo/gui/SellerList.fxml", (SellerListController controller) -> {
+            controller.setSellerService(new SellerService());
+            controller.updateTableView();
+        });
     }
 
     @FXML
