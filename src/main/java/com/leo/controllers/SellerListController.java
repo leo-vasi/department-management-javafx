@@ -4,6 +4,7 @@ import com.leo.application.departmentcrudjavafx.Main;
 import com.leo.db.DbIntegrityException;
 import com.leo.entities.Seller;
 import com.leo.listeners.DataChangeListener;
+import com.leo.services.DepartmentService;
 import com.leo.services.SellerService;
 import com.leo.util.Alerts;
 import com.leo.util.Utils;
@@ -111,7 +112,8 @@ public class SellerListController implements Initializable, DataChangeListener {
             controller.setSeller(obj);
             controller.subscribeDataChangeListener(this);
             controller.updateFormData();
-            controller.setSellerService(new SellerService());
+            controller.setServices(new SellerService(), new DepartmentService());
+            controller.loadAssociatedObjects();
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Enter seller data");
             dialogStage.setScene(new Scene(pane));
@@ -121,6 +123,7 @@ public class SellerListController implements Initializable, DataChangeListener {
             dialogStage.showAndWait();
         }
         catch (IOException e) {
+            e.printStackTrace();
             Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
